@@ -10,12 +10,19 @@ sites are setup and exposed using the code in this repository:
 - [Alephium Explorer](https://alephium.hongchao.me/#/blocks) (`https://alephium.hongchao.me`)
 - [Alephium Overview - Grafana](https://grafana.hongchao.me/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s) (`https://grafana.hongchao.me`)
 - [Alephium API Documentation](https://alephium.hongchao.me/docs) (`https://alephium.hongchao.me/docs`)
-- Alephium Full Node with Mining Enabled (`35.241.179.18:9973`)
+- Alephium Full Node with [CPU Miner](https://github.com/alephium/cpu-miner) Enabled (`35.241.179.18:9973`)
 
-Kubernetes YAML files can probably be re-used in other cloud
-providers.
+[Terraform](terraform) files are GCP specific. [Kubernetes YAML
+files](kubernetes) can probably be re-used with other cloud providers.
 
-## Sets up the GCP project and GKE cluster
+## Prerequisit
+
+* [Terraform](https://www.terraform.io/)
+* [Google Cloud SDK](https://cloud.google.com/sdk/)
+
+## Setup
+
+### GCP project and GKE cluster
 
 1. If you have not setup GCP for your google account already, you can
    try to set it up [here](https://cloud.google.com/gcp/). For new
@@ -35,7 +42,9 @@ terraform init
 terraform apply -var="project_billing_account=YOUR_BILLING_ACCOUNT"
 ```
 
-More powerful machines can be set using
-`kubernetes_node_pool_machine_type` variable, which might be
-beneficial during mining.
+More powerful [machine
+types](https://cloud.google.com/compute/docs/machine-types) can be set
+up using `kubernetes_node_pool_machine_type` variable, which might be
+helpful during mining. More available variables please check the
+[variables.tf](terraform/variables.tf) file.
 
