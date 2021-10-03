@@ -1,0 +1,277 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alephium
+  name: alephium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alephium
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "12973"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "true"
+      labels:
+        app: alephium
+      name: alephium
+    spec:
+      containers:
+#      - command: ['sleep', 'infinity']
+      - args:
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+        image: liuhongchao/dev-alephium:0.10.2_9-6c1aba86-SNAPSHOT
+        imagePullPolicy: Always
+        name: alephium
+        volumeMounts:
+          - mountPath: "/alephium-home/"
+            name: alephium-home
+          - mountPath: "/alephium-home/.alephium/user.conf"
+            name: alephium-configs
+            subPath: user.conf
+          - mountPath: "/file-uploads"
+            name: file-uploads
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+#      - command:
+#          - /app/bin/explorer-backend
+#          - -Ddb.db.host=postgres
+#          - -Ddb.db.name=explorer
+#          - -Dexplorer.host=0.0.0.0
+#          # - sleep
+#          # - infinity
+#        env:
+#        - name: JAVA_OPTS
+#          value: -Xms256m -Xmx3072m
+#        image: liuhongchao/explorer-backend:0.8.3_70-c07bef4d_20210909-1754-SNAPSHOT
+#        imagePullPolicy: Always
+#        name: explorer-backend
+#        terminationMessagePath: /dev/termination-log
+#        terminationMessagePolicy: File
+#      - args:
+#        image: liuhongchao/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
+#        imagePullPolicy: Always
+#        name: explorer-frontend
+#        terminationMessagePath: /dev/termination-log
+#        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: alephium-home
+          persistentVolumeClaim:
+            claimName: alephium-blockchain-pvc-claim
+        - name: alephium-configs
+          configMap:
+            name: alephium-configs
+        - name: file-uploads  # required by http post
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alephium-cpu-miner
+  name: alephium-cpu-miner 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alephium-cpu-miner
+  template:
+    metadata:
+      labels:
+        app: alephium-cpu-miner
+      name: alephium-cpu-miner
+    spec:
+      containers:
+      #- command: ['sleep', 'infinity']
+      - command: ['/cpu-miner', 'alephium']
+        image: liuhongchao/alephium-cpu-miner:v0.0.2
+        imagePullPolicy: Always
+        name: alephium-cpu-miner
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alephium
+spec:
+  selector:
+    app: alephium
+  ports:
+    - name: http
+      protocol: TCP
+      port: 12973
+      targetPort: 12973
+    - name: ws
+      protocol: TCP
+      port: 11973
+      targetPort: 11973
+    - name: p2p
+      protocol: TCP
+      port: 9973
+      targetPort: 9973
+    - name: miner
+      protocol: TCP
+      port: 10973
+      targetPort: 10973
+    - name: explorer
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: explorer-backend
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-blockchain-pvc-claim
+  namespace: bitcoin
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alephium-configs
+  namespace: bitcoin
+data:
+  user.conf: |
+    alephium.network.network-id = 1
+    alephium.discovery.bootstrap = ["18.185.54.38:9973", "3.141.11.239:9973", "54.79.138.71:9973"]
+
+    alephium.network.external-address = "34.79.193.48:9973"
+    alephium.mining.miner-addresses = ["1DHxpmMp9xnb7mvRpNZJnRFEZGsSpE9kPL5USuEkef8xH", "1FXGMrsSKmxrN6Qeo1XgJmjzbfvx49emrjjqQbAgZQkw1", "1E847bQNrweuyWu29Zd3D5kNU7KsZUaqzAYc3UFzL6qQB", "17dsoD37kZZebfpu3a7YyM3nmHM9zGaph1VjZL2tumr2a"]
+    alephium.mining.api-interface = "0.0.0.0"
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: alephium-nioctib-tech-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - alephium.nioctib.tech
+    secretName: alephium-nioctib-tech-it-tls
+  rules:
+  - host: alephium.nioctib.tech
+    http:
+      paths:
+      - path: /docs
+        backend:
+          serviceName: alephium
+          servicePort: 12973
+      - path: /blocks
+        backend:
+          serviceName: alephium
+          servicePort: 9090
+      - path: /transactions
+        backend:
+          serviceName: alephium
+          servicePort: 9090
+      - path: /addresses
+        backend:
+          serviceName: alephium
+          servicePort: 9090
+      - path: /
+        backend:
+          serviceName: alephium
+          servicePort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alephium-miner
+spec:
+  selector:
+    app: alephium
+  ports:
+    - name: p2p
+      protocol: TCP
+      port: 9973
+      targetPort: 9973
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          volumeMounts:
+            - name: explorer-postgres-data
+              mountPath: /data/
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: explorer
+            - name: PGDATA
+              value: /data/pgdata2
+      volumes:
+        - name: explorer-postgres-data
+          persistentVolumeClaim:
+            claimName: alephium-explorer-postgres-pvc-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-explorer-postgres-pvc-claim
+  namespace: bitcoin
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
