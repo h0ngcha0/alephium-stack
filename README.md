@@ -50,16 +50,18 @@ helpful during mining. More available variables please check the
 
 ### Kubernetes Resources
 
+#### Alephium
 Go to the [kubernetes](kubernetes) folder and run
 
 ```
 kubectl apply -k alephium
 ```
 
-This will install the Alephium full node, block explorer backend and
-frontend, as well as the CPU miner in the `alephium` namespace.
+This will install the Alephium full node, block explorer as well as
+the CPU miner in the `alephium` namespace.
 
-To enable monitoring, run
+#### Monitoring (Optional)
+Go to the [kubernetes](kubernetes) folder and run
 
 ```
 kubectl apply -k monitoring
@@ -70,3 +72,56 @@ This will install [Prometheus](https://prometheus.io/) and
 namespace. Prometheus server is configured to scrape the metrics
 endpoint for Alephium full node.
 
+#### Exposing Sites (Optional)
+
+First we need to install
+
+- [cert manager](https://cert-manager.io/docs/),  which automatically
+  manages certificates using letsencrypt.
+- [ingress-nginx](https://github.com/kubernetes/ingress-nginx) which
+  exposes Kubernetes services using Nginx as reverse proxy and load
+  balancer.
+
+Go to the [kubernetes](kubernetes) folder and run
+
+```
+kubectl apply -k cert-manager
+kubectl apply -k ingress-nginx
+```
+
+After that, to expose the sites mentioned at the beginning of the
+README, run
+
+```
+# exposes alephium.hongchao.me and alephium.hongchao.me/docs
+kubectl apply -f alephium/alephium-ingress.yaml
+
+# exposes grafana.hongchao.me
+kubectl apply -f monitoring/grafana-ingress.yaml
+```
+
+Please take a look at
+[alephium-ingress.yaml](kubernetes/alephium/alephium-ingress.yaml) and
+[grafana-ingress.yaml](kubernetes/monitoring/grafana-ingress.yaml),
+update with the new domain accordingly. Note that you also need to
+create a DNS A record for your domain to point to the external IP address of
+the `ingress-nginx` service.
+
+```
+(⎈ |alephium-stack:ingress-nginx)➜  kubernetes git:(master) ✗ kubectl get service ingress-nginx-controller --namespace ingress-nginx
+NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+ingress-nginx-controller   LoadBalancer   10.3.240.206   34.76.236.163   80:32611/TCP,443:31303/TCP   3h37m
+```
+
+Here the external IP is `34.76.236.163`, which is the same as
+`alephium.hongchao.me` as shown below:
+
+```
+(⎈ |alephium-stack:ingress-nginx)➜  kubernetes git:(master) ✗ nslookup alephium.hongchao.me
+Server:         192.168.1.1
+Address:        192.168.1.1#53
+
+Non-authoritative answer:
+Name:   alephium.hongchao.me
+Address: 34.76.236.163
+```
