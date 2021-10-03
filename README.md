@@ -108,7 +108,7 @@ create a DNS A record for your domain to point to the external IP address of
 the `ingress-nginx` service.
 
 ```
-(⎈ |alephium-stack:ingress-nginx)➜  kubernetes git:(master) ✗ kubectl get service ingress-nginx-controller --namespace ingress-nginx
+➜ kubectl get service ingress-nginx-controller --namespace ingress-nginx
 NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
 ingress-nginx-controller   LoadBalancer   10.3.240.206   34.76.236.163   80:32611/TCP,443:31303/TCP   3h37m
 ```
@@ -117,7 +117,7 @@ Here the external IP is `34.76.236.163`, which is the same as
 `alephium.hongchao.me` as shown below:
 
 ```
-(⎈ |alephium-stack:ingress-nginx)➜  kubernetes git:(master) ✗ nslookup alephium.hongchao.me
+➜ kubernetes git:(master) ✗ nslookup alephium.hongchao.me
 Server:         192.168.1.1
 Address:        192.168.1.1#53
 
@@ -134,11 +134,11 @@ Address: 34.76.236.163
 
 ```
 # Port forward alephium from Kubernetes cluster
-(⎈ |alephium-stack:alephium)➜  kubernetes git:(master) ✗ kubectl
-port-forward svc/alephium 12973 Forwarding from 127.0.0.1:12973 -> 12973
+➜ kubectl port-forward svc/alephium 12973
+Forwarding from 127.0.0.1:12973 -> 12973
 Forwarding from [::1]:12973 -> 12973
 
 # Curl locally
-(⎈ |alephium-stack:alephium)➜  blockchain curl localhost:12973/infos/self-clique
+➜ curl localhost:12973/infos/self-clique
 {"cliqueId":"03764042ab3c875481e5eed6d7a59027a7232582c189e1c266f57b62591ae0d8e0","networkId":1,"numZerosAtLeastInHash":18,"nodes":[{"address":"127.0.0.1","restPort":12973,"wsPort":11973,"minerApiPort":10973}],"selfReady":true,"synced":true,"groupNumPerBroker":4,"groups":4}
 ```
