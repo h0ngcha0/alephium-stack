@@ -34,14 +34,8 @@ spec:
       name: alephium-cpu-miner
     spec:
       containers:
-      #- command: ['sleep', 'infinity']
       - command: ['/cpu-miner', 'alephium']
         image: liuhongchao/alephium-cpu-miner:v0.0.2
         imagePullPolicy: Always
         name: alephium-cpu-miner
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      terminationGracePeriodSeconds: 30
+

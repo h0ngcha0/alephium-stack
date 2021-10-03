@@ -87,7 +87,7 @@ data:
     alephium.network.network-id = 1
     alephium.discovery.bootstrap = ["18.185.54.38:9973", "3.141.11.239:9973", "54.79.138.71:9973"]
 
-    alephium.network.external-address = "34.79.193.48:9973"
+    alephium.network.external-address = "35.241.179.18:9973"
     alephium.mining.miner-addresses = ["1DHxpmMp9xnb7mvRpNZJnRFEZGsSpE9kPL5USuEkef8xH", "1FXGMrsSKmxrN6Qeo1XgJmjzbfvx49emrjjqQbAgZQkw1", "1E847bQNrweuyWu29Zd3D5kNU7KsZUaqzAYc3UFzL6qQB", "17dsoD37kZZebfpu3a7YyM3nmHM9zGaph1VjZL2tumr2a"]
     alephium.mining.api-interface = "0.0.0.0"
     alephium.api.network-interface = "0.0.0.0"

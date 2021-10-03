@@ -2,5 +2,5 @@ namespace: alephium
 resources:
   - alephium-namespace.yaml
   - alephium-full-node.yaml
-#  - alephium-miner.yaml
-#  - alephium-ingress.yaml
+  - alephium-miner.yaml
+  - alephium-ingress.yaml
