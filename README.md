@@ -35,7 +35,7 @@ files](kubernetes) can probably be re-used with other cloud providers.
 2. After GCP is setup, you can find your billing account id
    [here](https://console.cloud.google.com/billing)
 
-After that, go to the terraform folder and run
+After that, go to the [terraform](terraform) folder and run
 
 ```
 terraform init
@@ -47,4 +47,26 @@ types](https://cloud.google.com/compute/docs/machine-types) can be set
 up using `kubernetes_node_pool_machine_type` variable, which might be
 helpful during mining. More available variables please check the
 [variables.tf](terraform/variables.tf) file.
+
+### Kubernetes Resources
+
+Go to the [kubernetes](kubernetes) folder and run
+
+```
+kubectl apply -k alephium
+```
+
+This will install the Alephium full node, block explorer backend and
+frontend, as well as the CPU miner in the `alephium` namespace.
+
+To enable monitoring, run
+
+```
+kubectl apply -k monitoring
+```
+
+This will install [Prometheus](https://prometheus.io/) and
+[Grafana](https://grafana.com/) in the `monitoring`
+namespace. Prometheus server is configured to scrape the metrics
+endpoint for Alephium full node.
 

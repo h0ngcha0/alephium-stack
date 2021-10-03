@@ -3,4 +3,4 @@ resources:
   - monitoring-namespace.yaml
   - prometheus.yaml
   - grafana.yaml
-  - grafana-ingress.yaml
+#  - grafana-ingress.yaml
