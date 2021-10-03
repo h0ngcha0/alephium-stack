@@ -42,6 +42,15 @@ resource "google_project_service" "project_service_monitoring" {
   ]
 }
 
+resource "google_project_service" "project_service_kubernetes" {
+  project                    = var.project_id
+  service                    = "container.googleapis.com"
+  disable_dependent_services = true
+  depends_on = [
+    google_project.project
+  ]
+}
+
 resource "google_project_service" "project_service_stackdriver" {
   project                    = var.project_id
   service                    = "stackdriver.googleapis.com"
@@ -49,9 +58,4 @@ resource "google_project_service" "project_service_stackdriver" {
   depends_on = [
     google_project.project
   ]
-}
-
-resource "google_compute_project_default_network_tier" "default" {
-  project      = var.project_id
-  network_tier = "STANDARD"
 }

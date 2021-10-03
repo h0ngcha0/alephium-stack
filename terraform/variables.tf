@@ -7,6 +7,7 @@ variable "project_name" {
 variable "project_id" {
   type        = string
   description = "Id of the Google project for running bitcoin full node."
+  default     = "alephium-stack"
 }
 
 variable "region" {
