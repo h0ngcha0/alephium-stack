@@ -125,3 +125,20 @@ Non-authoritative answer:
 Name:   alephium.hongchao.me
 Address: 34.76.236.163
 ```
+
+## Usage
+
+- Run Alephium stack in K8S and expose to the public
+- Mining with powerful machines in the cloud
+- Develop against remote Alephium locally, e.g.
+
+```
+# Port forward alephium from Kubernetes cluster
+(⎈ |alephium-stack:alephium)➜  kubernetes git:(master) ✗ kubectl
+port-forward svc/alephium 12973 Forwarding from 127.0.0.1:12973 -> 12973
+Forwarding from [::1]:12973 -> 12973
+
+# Curl locally
+(⎈ |alephium-stack:alephium)➜  blockchain curl localhost:12973/infos/self-clique
+{"cliqueId":"03764042ab3c875481e5eed6d7a59027a7232582c189e1c266f57b62591ae0d8e0","networkId":1,"numZerosAtLeastInHash":18,"nodes":[{"address":"127.0.0.1","restPort":12973,"wsPort":11973,"minerApiPort":10973}],"selfReady":true,"synced":true,"groupNumPerBroker":4,"groups":4}
+```
