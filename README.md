@@ -1,16 +1,16 @@
 Alephium Stack
 ==============
 
-This repository helps to run the
+Code in this repository helps to run the
 [Alephium](https://github.com/alephium/alephium) stack on [Google
 Cloud Platform](https://cloud.google.com/) using [Kubernetes
 Engine](https://cloud.google.com/kubernetes-engine/). The following
 sites are setup and exposed using the code in this repository:
 
-- [Alephium Explorer](https://alephium.hongchao.me/#/blocks)
-- [Alephium Overview - Grafana](https://grafana.hongchao.me/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s)
-- [Alephium API Documentation](https://alephium.hongchao.me/docs)
-- Alephium Full Node with Mining Enabled (exposed at 35.241.179.18:9973)
+- [Alephium Explorer](https://alephium.hongchao.me/#/blocks) (`https://alephium.hongchao.me`)
+- [Alephium Overview - Grafana](https://grafana.hongchao.me/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s) (`https://grafana.hongchao.me`)
+- [Alephium API Documentation](https://alephium.hongchao.me/docs) (`https://alephium.hongchao.me/docs`)
+- Alephium Full Node with Mining Enabled (`35.241.179.18:9973`)
 
 Kubernetes YAML files can probably be re-used in other cloud
 providers.
