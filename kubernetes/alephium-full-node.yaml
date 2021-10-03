@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alephium
+  name: alephium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alephium
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "12973"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "true"
+      labels:
+        app: alephium
+      name: alephium
+    spec:
+      containers:
+
+      - name: alephium
+#      - command: ['sleep', 'infinity']
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+        image: liuhongchao/dev-alephium:0.10.2_9-6c1aba86-SNAPSHOT
+        #image: alephium/alephium:v0.10.2
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 12973
+        volumeMounts:
+          - mountPath: "/alephium-home/"
+            name: alephium-home
+          - mountPath: "/alephium-home/.alephium/user.conf"
+            name: alephium-configs
+            subPath: user.conf
+          - mountPath: "/file-uploads"
+            name: file-uploads
+      volumes:
+        - name: alephium-home
+          persistentVolumeClaim:
+            claimName: alephium-blockchain-pvc-claim
+        - name: alephium-configs
+          configMap:
+            name: alephium-configs
+        - name: file-uploads  # required by http post
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alephium
+spec:
+  selector:
+    app: alephium
+  ports:
+    - name: http
+      protocol: TCP
+      port: 12973
+      targetPort: 12973
+    - name: ws
+      protocol: TCP
+      port: 11973
+      targetPort: 11973
+    - name: p2p
+      protocol: TCP
+      port: 9973
+      targetPort: 9973
+    - name: miner
+      protocol: TCP
+      port: 10973
+      targetPort: 10973
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-blockchain-pvc-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alephium-configs
+data:
+  user.conf: |
+    alephium.network.network-id = 1
+    alephium.discovery.bootstrap = ["18.185.54.38:9973", "3.141.11.239:9973", "54.79.138.71:9973"]
+
+    alephium.network.external-address = "34.79.193.48:9973"
+    alephium.mining.miner-addresses = ["1DHxpmMp9xnb7mvRpNZJnRFEZGsSpE9kPL5USuEkef8xH", "1FXGMrsSKmxrN6Qeo1XgJmjzbfvx49emrjjqQbAgZQkw1", "1E847bQNrweuyWu29Zd3D5kNU7KsZUaqzAYc3UFzL6qQB", "17dsoD37kZZebfpu3a7YyM3nmHM9zGaph1VjZL2tumr2a"]
+    alephium.mining.api-interface = "0.0.0.0"
+    alephium.api.network-interface = "0.0.0.0"

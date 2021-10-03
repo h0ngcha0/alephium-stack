@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alephium-explorer
+  name: alephium-explorer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alephium-explorer
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "12973"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "false"  # enable when we have metrics
+      labels:
+        app: alephium-explorer
+      name: alephium-explorer
+    spec:
+      containers:
+      - name: explorer-backend
+        command:
+          - /app/bin/explorer-backend-app
+          - -Ddb.db.host=postgres
+          - -Ddb.db.name=explorer
+          - -Dblockflow.host=alephium
+          - -Dexplorer.host=0.0.0.0
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+        image: alephium/explorer-backend:0.10.0
+      - name: explorer-frontend
+        args:
+        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          volumeMounts:
+            - name: explorer-postgres-data
+              mountPath: /data/
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: explorer
+            - name: PGDATA
+              value: /data/pgdata
+      volumes:
+        - name: explorer-postgres-data
+          persistentVolumeClaim:
+            claimName: alephium-explorer-postgres-pvc-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-explorer-postgres-pvc-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alephium-explorer
+spec:
+  selector:
+    app: alephium-explorer
+  ports:
+    - name: frontend
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: backend
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: ClusterIP
