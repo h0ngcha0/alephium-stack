@@ -40,6 +40,22 @@ spec:
             subPath: user.conf
           - mountPath: "/file-uploads"
             name: file-uploads
+      - name: explorer-backend
+        command:
+          - /app/bin/explorer-backend-app
+          - -Dexplorer.host=0.0.0.0
+          - -Dblockflow.host=alephium
+          - -Ddb.db.host=postgres
+          - -Ddb.db.name=explorer
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+          name: BLOCKFLOW_HOST
+          value: alephium
+        image: alephium/explorer-backend:0.10.0
+      - name: explorer-frontend
+        args:
+        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
@@ -49,6 +65,92 @@ spec:
             name: alephium-configs
         - name: file-uploads  # required by http post
           emptyDir: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-blockchain-pvc-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alephium-configs
+data:
+  user.conf: |
+    alephium.network.network-id = 1
+    alephium.discovery.bootstrap = ["18.185.54.38:9973", "3.141.11.239:9973", "54.79.138.71:9973"]
+
+    alephium.network.external-address = "34.79.193.48:9973"
+    alephium.mining.miner-addresses = ["1DHxpmMp9xnb7mvRpNZJnRFEZGsSpE9kPL5USuEkef8xH", "1FXGMrsSKmxrN6Qeo1XgJmjzbfvx49emrjjqQbAgZQkw1", "1E847bQNrweuyWu29Zd3D5kNU7KsZUaqzAYc3UFzL6qQB", "17dsoD37kZZebfpu3a7YyM3nmHM9zGaph1VjZL2tumr2a"]
+    alephium.mining.api-interface = "0.0.0.0"
+    alephium.api.network-interface = "0.0.0.0"
+---
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          volumeMounts:
+            - name: explorer-postgres-data
+              mountPath: /data/
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: explorer
+            - name: PGDATA
+              value: /data/pgdata
+      volumes:
+        - name: explorer-postgres-data
+          persistentVolumeClaim:
+            claimName: alephium-explorer-postgres-pvc-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-explorer-postgres-pvc-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
 ---
 apiVersion: v1
 kind: Service
@@ -77,27 +179,19 @@ spec:
   type: ClusterIP
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: alephium-blockchain-pvc-claim
+  name: alephium-explorer
 spec:
-  storageClassName: standard
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: alephium-configs
-data:
-  user.conf: |
-    alephium.network.network-id = 1
-    alephium.discovery.bootstrap = ["18.185.54.38:9973", "3.141.11.239:9973", "54.79.138.71:9973"]
-
-    alephium.network.external-address = "34.79.193.48:9973"
-    alephium.mining.miner-addresses = ["1DHxpmMp9xnb7mvRpNZJnRFEZGsSpE9kPL5USuEkef8xH", "1FXGMrsSKmxrN6Qeo1XgJmjzbfvx49emrjjqQbAgZQkw1", "1E847bQNrweuyWu29Zd3D5kNU7KsZUaqzAYc3UFzL6qQB", "17dsoD37kZZebfpu3a7YyM3nmHM9zGaph1VjZL2tumr2a"]
-    alephium.mining.api-interface = "0.0.0.0"
-    alephium.api.network-interface = "0.0.0.0"
+  selector:
+    app: alephium
+  ports:
+    - name: frontend
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: backend
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: ClusterIP
