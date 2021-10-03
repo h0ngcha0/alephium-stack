@@ -127,24 +127,18 @@ spec:
       storage: 10Gi
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 7.2.1
+  name: grafana
+  namespace: monitoring
 data:
   dashboardproviders.yaml: |
     apiVersion: 1
-    providers:
-    - disableDeletion: false
-      folder: istio
-      name: istio
-      options:
-        path: /var/lib/grafana/dashboards/istio
-      orgId: 1
-      type: file
-    - disableDeletion: false
-      folder: istio
-      name: istio-services
-      options:
-        path: /var/lib/grafana/dashboards/istio-services
-      orgId: 1
-      type: file
+    providers:  # provision default alephium dashboards
   datasources.yaml: |
     apiVersion: 1
     datasources:
@@ -169,14 +163,6 @@ data:
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
-kind: ConfigMap
-metadata:
-  labels:
-    app.kubernetes.io/instance: grafana
-    app.kubernetes.io/name: grafana
-    app.kubernetes.io/version: 7.2.1
-  name: grafana
-  namespace: monitoring
 ---
 apiVersion: v1
 kind: Service
