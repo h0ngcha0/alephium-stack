@@ -2,8 +2,20 @@ Alephium Stack
 ==============
 
 The code in this repository sets up the
-[Alephium](https://github.com/alephium/alephium) stack in Kubernetes
-on GCP (GKE), using Terraform and Kubernetes YAML files.
+[Alephium](https://github.com/alephium/alephium) stack in
+[Kubernetes](https://kubernetes.io/) on
+[GCP](https://cloud.google.com/). using Terraform and Kubernetes YAML
+files.
+
+Kubernetes YAML files can probably be re-used in other cloud providers
+as well.
+
+The following sites are exposed using the code in this repository:
+
+- [Alephium Explorer](https://alephium.hongchao.me/#/blocks)
+- [Alephium Overview - Grafana](https://grafana.hongchao.me/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s)
+- [Alephium API Documentation](https://alephium.hongchao.me/docs)
+- Alephium Full Node with Mining (exposed at 35.241.179.18:9973)
 
 ## Sets up the GCP project and GKE cluster
 
