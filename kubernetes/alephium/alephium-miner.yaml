@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - command: ['/cpu-miner', 'alephium']
-        image: liuhongchao/alephium-cpu-miner:v0.0.2
+        image: alephium/dev-cpu-miner:latest
         imagePullPolicy: Always
         name: alephium-cpu-miner
 

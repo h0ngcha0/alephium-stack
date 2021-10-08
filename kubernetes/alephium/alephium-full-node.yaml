@@ -21,14 +21,11 @@ spec:
       name: alephium
     spec:
       containers:
-
       - name: alephium
-#      - command: ['sleep', 'infinity']
         env:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
-        image: liuhongchao/dev-alephium:0.10.2_9-6c1aba86-SNAPSHOT
-        #image: alephium/alephium:v0.10.2
+        image: alephium/alephium:v0.11.1
         imagePullPolicy: Always
         ports:
           - containerPort: 12973
@@ -122,7 +119,7 @@ spec:
             - name: POSTGRES_DB
               value: explorer
             - name: PGDATA
-              value: /data/pgdata
+              value: /data/pgdata2
       volumes:
         - name: explorer-postgres-data
           persistentVolumeClaim:
