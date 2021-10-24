@@ -23,7 +23,7 @@ metadata:
     app: alephium-cpu-miner
   name: alephium-cpu-miner 
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: alephium-cpu-miner
