@@ -38,4 +38,27 @@ spec:
         image: alephium/dev-cpu-miner:latest
         imagePullPolicy: Always
         name: alephium-cpu-miner
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alephium-gpu-miner
+  name: alephium-gpu-miner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alephium-gpu-miner
+  template:
+    metadata:
+      labels:
+        app: alephium-gpu-miner
+      name: alephium-gpu-miner
+    spec:
+      containers:
+      - command: ['/gpu-miner', 'alephium']
+        image: liuhongchao/gpu-miner:v0.1
+        imagePullPolicy: Always
+        name: alephium-gpu-miner
 

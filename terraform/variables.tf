@@ -7,25 +7,38 @@ variable "project_name" {
 variable "project_id" {
   type        = string
   description = "Id of the Google project for running the Alephium stack."
-  default     = "alephium-stack"
+  default     = "alephium-stack-with-mining"
 }
 
 variable "region" {
   type        = string
   description = "Google project region."
-  default     = "europe-west1"
+  default     = "europe-west4"
 }
 
+# europe-west4-a and europe-west4-b
 variable "zone" {
   type        = string
   description = "Google project zone."
-  default     = "europe-west1-d"
+  default     = "europe-west4-a"
 }
 
-variable "kubernetes_node_pool_machine_type" {
+variable "kubernetes_node_pool_primary_machine_type" {
   type        = string
-  description = "Machine type for Kubernetes node pool."
+  description = "Machine type for Kubernetes primary node pool."
   default     = "e2-standard-2"
+}
+
+variable "kubernetes_node_pool_gpu_mining_machine_type" {
+  type        = string
+  description = "Machine type for Kubernetes GPU mining node pool."
+  default     = "a2-highgpu-1g"
+}
+
+variable "kubernetes_node_pool_gpu_mining_gpu_type" {
+  type        = string
+  description = "GPU type for Kubernetes GPU mining node pool."
+  default     = "nvidia-tesla-p100"
 }
 
 variable "project_billing_account" {

@@ -57,7 +57,7 @@ resource "google_container_node_pool" "alephium_stack_nodes" {
 
   node_config {
     preemptible  = true
-    machine_type = var.kubernetes_node_pool_machine_type
+    machine_type = var.kubernetes_node_pool_primary_machine_type
 
     metadata = {
       disable-legacy-endpoints = "true"
@@ -70,6 +70,56 @@ resource "google_container_node_pool" "alephium_stack_nodes" {
     disk_size_gb = 25
 
     tags = [local.node_pool_ingress_tag]
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+  }
+
+  management {
+    auto_repair = true
+  }
+
+  depends_on = [
+    google_container_cluster.cluster
+  ]
+}
+
+resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
+  project  = var.project_id
+  name     = "alephium-stack-gpu"
+  cluster  = google_container_cluster.cluster.name
+  location = var.zone
+
+  initial_node_count = 1
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 1
+  }
+
+  node_config {
+    preemptible  = true
+    machine_type = var.kubernetes_node_pool_gpu_mining_machine_type
+
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+
+    labels = {
+      preemptible-node = true
+    }
+
+    disk_size_gb = 25
+
+    tags = [local.node_pool_ingress_tag]
+
+    guest_accelerator {
+      type  = var.kubernetes_node_pool_gpu_mining_gpu_type
+      count = 1
+    }
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/devstorage.read_only",
