@@ -85,6 +85,10 @@ First we need to install
 Go to the [kubernetes](kubernetes) folder and run
 
 ```
+kubectl create clusterrolebinding cluster-admin-binding \
+    --clusterrole=cluster-admin \
+    --user=$(gcloud config get-value core/account)
+
 kubectl apply -k cert-manager
 kubectl apply -k ingress-nginx
 ```
