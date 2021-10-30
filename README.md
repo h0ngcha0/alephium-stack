@@ -130,6 +130,27 @@ Name:   alephium.hongchao.me
 Address: 34.76.236.163
 ```
 
+## Mining (Optional)
+
+Alephium stack comes with 2 miners: CPU miner and GPU miner (see [alephium-miner.yaml](kubernetes/alephium/alephium-miner.yaml)).
+
+### CPU mining
+CPU miner works out of the box.
+
+### GPU mining
+
+To do GPU ming on GKE, the terraform file already sets up a seperate GPU enabled nodepool. After the nodepool is created, Nvidia
+GPU device drivers need to be installed by deploying the following daemonset:
+
+```
+kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
+```
+
+Note that you might need to [request GPU quota](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus#request_quota) from GCP,
+otherwise terraform can not be executed successfully. Please refer to [Running GPUs on GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/gpus)
+
+After that, adjust the replica number for GPU miner (see [alephium-miner.yaml](kubernetes/alephium/alephium-miner.yaml)) to mine using GPUs.
+
 ## Usage
 
 - Run Alephium stack in K8S and expose to the public

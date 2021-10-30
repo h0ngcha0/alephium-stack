@@ -58,7 +58,15 @@ spec:
     spec:
       containers:
       - command: ['/gpu-miner', 'alephium']
-        image: liuhongchao/gpu-miner:v0.1
+        image: alephium/gpu-miner:latest
         imagePullPolicy: Always
         name: alephium-gpu-miner
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
 
