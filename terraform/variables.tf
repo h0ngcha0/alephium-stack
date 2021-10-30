@@ -7,7 +7,7 @@ variable "project_name" {
 variable "project_id" {
   type        = string
   description = "Id of the Google project for running the Alephium stack."
-  default     = "alephium-stack-with-mining"
+  default     = "alephium-stack"
 }
 
 variable "region" {
@@ -32,7 +32,7 @@ variable "kubernetes_node_pool_primary_machine_type" {
 variable "kubernetes_node_pool_gpu_mining_machine_type" {
   type        = string
   description = "Machine type for Kubernetes GPU mining node pool."
-  default     = "a2-highgpu-1g"
+  default     = "n1-standard-1"
 }
 
 variable "kubernetes_node_pool_gpu_mining_gpu_type" {
