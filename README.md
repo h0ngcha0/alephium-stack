@@ -10,7 +10,7 @@ sites are setup and exposed using the code in this repository:
 - [Alephium Explorer](https://alephium.hongchao.me/#/blocks) (`https://alephium.hongchao.me`)
 - [Alephium Overview - Grafana](https://grafana.hongchao.me/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s) (`https://grafana.hongchao.me`)
 - [Alephium API Documentation](https://alephium.hongchao.me/docs) (`https://alephium.hongchao.me/docs`)
-- Alephium Full Node with [CPU Miner](https://github.com/alephium/cpu-miner) Enabled (`35.241.179.18:9973`)
+- Alephium Full Node with the possibility to enable [CPU Miner](https://github.com/alephium/cpu-miner) and [GPU Miner](https://github.com/alephium/gpu-miner)
 
 [Terraform](terraform) files are GCP specific. [Kubernetes YAML
 files](kubernetes) can probably be re-used with other cloud providers.

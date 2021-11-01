@@ -96,7 +96,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
   initial_node_count = 1
 
   autoscaling {
-    min_node_count = 1
+    min_node_count = 0
     max_node_count = 1
   }
 
@@ -118,7 +118,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
 
     guest_accelerator {
       type  = var.kubernetes_node_pool_gpu_mining_gpu_type
-      count = 1
+      count = 2
     }
 
     oauth_scopes = [
