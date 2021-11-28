@@ -38,7 +38,7 @@ variable "kubernetes_node_pool_gpu_mining_machine_type" {
 variable "kubernetes_node_pool_gpu_mining_gpu_type" {
   type        = string
   description = "GPU type for Kubernetes GPU mining node pool."
-  default     = "nvidia-tesla-p100"
+  default     = "nvidia-tesla-v100"
 }
 
 variable "project_billing_account" {

@@ -25,7 +25,9 @@ spec:
         env:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
-        image: alephium/alephium:v0.11.5
+        - name: ALEPHIUM_LOG_LEVEL
+          value: WARN
+        image: alephium/alephium:v1.1.4
         imagePullPolicy: Always
         ports:
           - containerPort: 12973
@@ -35,24 +37,24 @@ spec:
           - mountPath: "/alephium-home/.alephium/user.conf"
             name: alephium-configs
             subPath: user.conf
-          - mountPath: "/file-uploads"
+          - mountPath: "/alephium-home/file-uploads"
             name: file-uploads
-      - name: explorer-backend
-        command:
-          - /app/bin/explorer-backend-app
-          - -Dexplorer.host=0.0.0.0
-          - -Dblockflow.host=alephium
-          - -Ddb.db.host=postgres
-          - -Ddb.db.name=explorer
-        env:
-        - name: JAVA_OPTS
-          value: -Xms256m -Xmx3072m
-        - name: BLOCKFLOW_HOST
-          value: alephium
-        image: alephium/explorer-backend:0.10.0
-      - name: explorer-frontend
-        args:
-        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
+#      - name: explorer-backend
+#        command:
+#          - /app/bin/explorer-backend-app
+#          - -Dexplorer.host=0.0.0.0
+#          - -Dblockflow.host=alephium
+#          - -Ddb.db.host=postgres
+#          - -Ddb.db.name=explorer
+#        env:
+#        - name: JAVA_OPTS
+#          value: -Xms256m -Xmx3072m
+#        - name: BLOCKFLOW_HOST
+#          value: alephium
+#        image: alephium/explorer-backend:0.10.0
+#      - name: explorer-frontend
+#        args:
+#        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
@@ -81,11 +83,9 @@ metadata:
   name: alephium-configs
 data:
   user.conf: |
-    alephium.network.network-id = 1
-    alephium.discovery.bootstrap = ["18.156.2.99:9973", "18.156.163.31:9973", "3.64.55.68:9973"]
-
-    alephium.network.external-address = "35.204.28.181:9973"
-    alephium.mining.miner-addresses = ["1DHxpmMp9xnb7mvRpNZJnRFEZGsSpE9kPL5USuEkef8xH", "1FXGMrsSKmxrN6Qeo1XgJmjzbfvx49emrjjqQbAgZQkw1", "1E847bQNrweuyWu29Zd3D5kNU7KsZUaqzAYc3UFzL6qQB", "17dsoD37kZZebfpu3a7YyM3nmHM9zGaph1VjZL2tumr2a"]
+    alephium.network.external-address = "35.230.126.49:9973"
+    #alephium.network.external-address = "35.204.28.181:9973"
+    alephium.mining.miner-addresses = ["1EEiGRU3P88CeMhEYGsQBmzxknw3gtpncTE76jx7Y58mE", "1EVr6MCWgucwQqQukA4HZimondaRjwouDPmcqsB2g5Jt6", "16nEBYrg19QDxsX6hP7rK7z5cFabCtSAua5Raii7rn5Em", "1QuKHj8QMirKwdksoKq5YTFzR6YPP1RDvcNyuV26m32c"]
     alephium.mining.api-interface = "0.0.0.0"
     alephium.api.network-interface = "0.0.0.0"
 ---
@@ -119,7 +119,7 @@ spec:
             - name: POSTGRES_DB
               value: explorer
             - name: PGDATA
-              value: /data/pgdata
+              value: /data/pgdata2
       volumes:
         - name: explorer-postgres-data
           persistentVolumeClaim:

@@ -93,7 +93,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
   cluster  = google_container_cluster.cluster.name
   location = var.zone
 
-  initial_node_count = 1
+  initial_node_count = 0
 
   autoscaling {
     min_node_count = 0
@@ -118,7 +118,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
 
     guest_accelerator {
       type  = var.kubernetes_node_pool_gpu_mining_gpu_type
-      count = 2
+      count = 1
     }
 
     oauth_scopes = [
@@ -136,4 +136,5 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
     google_container_cluster.cluster
   ]
 }
+
 
