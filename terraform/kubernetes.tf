@@ -88,6 +88,8 @@ resource "google_container_node_pool" "alephium_stack_nodes" {
 }
 
 resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
+  count    = var.enable_gpu_mining ? 1 : 0
+
   project  = var.project_id
   name     = "alephium-stack-gpu"
   cluster  = google_container_cluster.cluster.name
@@ -136,5 +138,3 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
     google_container_cluster.cluster
   ]
 }
-
-

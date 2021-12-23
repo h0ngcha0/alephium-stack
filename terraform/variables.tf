@@ -35,6 +35,12 @@ variable "kubernetes_node_pool_gpu_mining_machine_type" {
   default     = "n1-standard-1"
 }
 
+variable "enable_gpu_mining" {
+  type        = bool
+  description = "Enable GPU mining pool"
+  default     = false
+}
+
 variable "kubernetes_node_pool_gpu_mining_gpu_type" {
   type        = string
   description = "GPU type for Kubernetes GPU mining node pool."
