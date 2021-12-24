@@ -39,22 +39,22 @@ spec:
             subPath: user.conf
           - mountPath: "/alephium-home/file-uploads"
             name: file-uploads
-#      - name: explorer-backend
-#        command:
-#          - /app/bin/explorer-backend-app
-#          - -Dexplorer.host=0.0.0.0
-#          - -Dblockflow.host=alephium
-#          - -Ddb.db.host=postgres
-#          - -Ddb.db.name=explorer
-#        env:
-#        - name: JAVA_OPTS
-#          value: -Xms256m -Xmx3072m
-#        - name: BLOCKFLOW_HOST
-#          value: alephium
-#        image: alephium/explorer-backend:0.10.0
-#      - name: explorer-frontend
-#        args:
-#        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
+      - name: explorer-backend
+        command:
+          - /app/bin/explorer-backend-app
+          - -Dexplorer.host=0.0.0.0
+          - -Dblockflow.host=alephium
+          - -Ddb.db.host=postgres
+          - -Ddb.db.name=explorer
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+        - name: BLOCKFLOW_HOST
+          value: alephium
+        image: alephium/explorer-backend:1.2.0
+      - name: explorer-frontend
+        args:
+        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
