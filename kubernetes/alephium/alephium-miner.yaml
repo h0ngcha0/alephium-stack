@@ -47,7 +47,7 @@ metadata:
   name: alephium-gpu-miner
 spec:
   # Adjust replicas if want to run more GPU miner instances
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: alephium-gpu-miner

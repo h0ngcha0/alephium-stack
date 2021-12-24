@@ -27,7 +27,7 @@ spec:
           value: -Xms256m -Xmx3072m
         - name: ALEPHIUM_LOG_LEVEL
           value: WARN
-        image: alephium/alephium:v1.1.4
+        image: alephium/alephium:latest
         imagePullPolicy: Always
         ports:
           - containerPort: 12973
@@ -83,7 +83,6 @@ metadata:
   name: alephium-configs
 data:
   user.conf: |
-    alephium.network.external-address = "35.230.126.49:9973"
     alephium.mining.miner-addresses = ["1EEiGRU3P88CeMhEYGsQBmzxknw3gtpncTE76jx7Y58mE", "1EVr6MCWgucwQqQukA4HZimondaRjwouDPmcqsB2g5Jt6", "16nEBYrg19QDxsX6hP7rK7z5cFabCtSAua5Raii7rn5Em", "1QuKHj8QMirKwdksoKq5YTFzR6YPP1RDvcNyuV26m32c"]
     alephium.mining.api-interface = "0.0.0.0"
     alephium.api.network-interface = "0.0.0.0"

@@ -1,3 +1,10 @@
+terraform {
+  backend "gcs" {
+    bucket = "alephium-terraform-state"
+    prefix = "alephium"
+  }
+}
+
 locals {
   node_pool_ingress_tag = "cluster-ingress"
 }

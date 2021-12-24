@@ -78,19 +78,32 @@ First we need to install
 
 - [cert manager](https://cert-manager.io/docs/),  which automatically
   manages certificates using letsencrypt.
+```
+## Install cert-manager
+## Follow the [Official installation instruction](https://cert-manager.io/docs/installation/helm/)
+$ kubectl create clusterrolebinding cluster-admin-binding \
+    --clusterrole=cluster-admin \
+    --user=$(gcloud config get-value core/account)
+
+$ helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.6.1 \
+  --set installCRDs=true
+
+$ kubectl apply -f cert-manager
+```
+
 - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) which
   exposes Kubernetes services using Nginx as reverse proxy and load
   balancer.
 
-Go to the [kubernetes](kubernetes) folder and run
-
 ```
-kubectl create clusterrolebinding cluster-admin-binding \
-    --clusterrole=cluster-admin \
-    --user=$(gcloud config get-value core/account)
+## Install ingress-nginx
+## Follow the [Offical installation instruction](https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.2/deploy/static/provider/cloud/deploy.yaml
 
-kubectl apply -k cert-manager
-kubectl apply -k ingress-nginx
 ```
 
 After that, to expose the sites mentioned at the beginning of the
