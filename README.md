@@ -77,10 +77,9 @@ endpoint for Alephium full node.
 First we need to install
 
 - [cert manager](https://cert-manager.io/docs/),  which automatically
-  manages certificates using letsencrypt.
+  manages certificates using letsencrypt. Follow the official [installation instruction](https://cert-manager.io/docs/installation/helm/)
 ```
 ## Install cert-manager
-## Follow the [Official installation instruction](https://cert-manager.io/docs/installation/helm/)
 $ kubectl create clusterrolebinding cluster-admin-binding \
     --clusterrole=cluster-admin \
     --user=$(gcloud config get-value core/account)
@@ -97,11 +96,10 @@ $ kubectl apply -f cert-manager
 
 - [ingress-nginx](https://github.com/kubernetes/ingress-nginx) which
   exposes Kubernetes services using Nginx as reverse proxy and load
-  balancer.
+  balancer. Follow the official [installation instruction](https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke)
 
 ```
 ## Install ingress-nginx
-## Follow the [Offical installation instruction](https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke)
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.2/deploy/static/provider/cloud/deploy.yaml
 
 ```
@@ -127,10 +125,10 @@ the `ingress-nginx` service.
 ```
 ➜ kubectl get service ingress-nginx-controller --namespace ingress-nginx
 NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-ingress-nginx-controller   LoadBalancer   10.3.240.206   34.76.236.163   80:32611/TCP,443:31303/TCP   3h37m
+ingress-nginx-controller   LoadBalancer   10.3.240.206   34.147.83.244   80:32611/TCP,443:31303/TCP   3h37m
 ```
 
-Here the external IP is `34.76.236.163`, which is the same as
+Here the external IP is `34.147.83.244`, which is the same as
 `alephium.hongchao.me` as shown below:
 
 ```
@@ -140,7 +138,7 @@ Address:        192.168.1.1#53
 
 Non-authoritative answer:
 Name:   alephium.hongchao.me
-Address: 34.76.236.163
+Address: 34.147.83.244
 ```
 
 ## Mining (Optional)
