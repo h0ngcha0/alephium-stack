@@ -26,7 +26,7 @@ spec:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
         - name: ALEPHIUM_LOG_LEVEL
-          value: WARN
+          value: INFO
         image: alephium/alephium:latest
         imagePullPolicy: Always
         ports:
@@ -39,22 +39,6 @@ spec:
             subPath: user.conf
           - mountPath: "/alephium-home/file-uploads"
             name: file-uploads
-      - name: explorer-backend
-        command:
-          - /app/bin/explorer-backend-app
-          - -Dexplorer.host=0.0.0.0
-          - -Dblockflow.host=alephium
-          - -Ddb.db.host=postgres
-          - -Ddb.db.name=explorer
-        env:
-        - name: JAVA_OPTS
-          value: -Xms256m -Xmx3072m
-        - name: BLOCKFLOW_HOST
-          value: alephium
-        image: alephium/explorer-backend:1.2.0
-      - name: explorer-frontend
-        args:
-        image: alephium/explorer:55b49281b9bf9423f65f583671cbd4b25bf9eff5
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
@@ -86,65 +70,8 @@ data:
     alephium.mining.miner-addresses = ["1EEiGRU3P88CeMhEYGsQBmzxknw3gtpncTE76jx7Y58mE", "1EVr6MCWgucwQqQukA4HZimondaRjwouDPmcqsB2g5Jt6", "16nEBYrg19QDxsX6hP7rK7z5cFabCtSAua5Raii7rn5Em", "1QuKHj8QMirKwdksoKq5YTFzR6YPP1RDvcNyuV26m32c"]
     alephium.mining.api-interface = "0.0.0.0"
     alephium.api.network-interface = "0.0.0.0"
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: postgres
-spec:
-  selector:
-    matchLabels:
-      app: postgres
-  serviceName: postgres
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-        - name: postgres
-          image: postgres
-          volumeMounts:
-            - name: explorer-postgres-data
-              mountPath: /data/
-          env:
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_PASSWORD
-              value: postgres
-            - name: POSTGRES_DB
-              value: explorer
-            - name: PGDATA
-              value: /data/pgdata2
-      volumes:
-        - name: explorer-postgres-data
-          persistentVolumeClaim:
-            claimName: alephium-explorer-postgres-pvc-claim
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: alephium-explorer-postgres-pvc-claim
-spec:
-  storageClassName: standard
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-spec:
-  selector:
-    app: postgres
-  type: ClusterIP
-  ports:
-    - port: 5432
-      targetPort: 5432
+    alephium.api.api-key = "181210f8f9c779c26da1d9b2075bde0127302ee0e3fca38c9a83f5b1dd8e5d3b"
+    alephium.network.internal-address = "alephium:9973"
 ---
 apiVersion: v1
 kind: Service
@@ -170,22 +97,4 @@ spec:
       protocol: TCP
       port: 10973
       targetPort: 10973
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: alephium-explorer
-spec:
-  selector:
-    app: alephium
-  ports:
-    - name: frontend
-      protocol: TCP
-      port: 3000
-      targetPort: 3000
-    - name: backend
-      protocol: TCP
-      port: 9090
-      targetPort: 9090
   type: ClusterIP

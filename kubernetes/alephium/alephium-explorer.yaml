@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: explorer-backend
+  name: explorer-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: explorer-backend
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "12973"
+        prometheus.io/scheme: http
+        prometheus.io/scrape: "true"
+      labels:
+        app: explorer-backend
+      name: explorer-backend
+    spec:
+      containers:
+      - name: explorer-backend
+        image: alephium/explorer-backend:1.2.0
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+        - name: BLOCKFLOW_HOST
+          value: alephium
+        - name: DB_HOST
+          value: postgres
+        - name: EXPLORER_HOST
+          value: 0.0.0.0
+        - name: ALEPHIUM_API_KEY
+          # internal for my own use, put yours here
+          value: 181210f8f9c779c26da1d9b2075bde0127302ee0e3fca38c9a83f5b1dd8e5d3b
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: explorer-backend
+spec:
+  selector:
+    app: explorer-backend
+  ports:
+    - name: explorer-backend
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: explorer-frontend
+  name: explorer-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: explorer-frontend
+  template:
+    metadata:
+      labels:
+        app: explorer-frontend
+      name: explorer-frontend
+    spec:
+      containers:
+      - name: explorer-frontend
+        image: liuhongchao/explorer:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: explorer-frontend
+spec:
+  selector:
+    app: explorer-frontend
+  ports:
+    - name: explorer-frontend
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          volumeMounts:
+            - name: explorer-postgres-data
+              mountPath: /data/
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: explorer
+            - name: PGDATA
+              value: /data/pgdata2
+      volumes:
+        - name: explorer-postgres-data
+          persistentVolumeClaim:
+            claimName: alephium-explorer-postgres-pvc-claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-explorer-postgres-pvc-claim
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
