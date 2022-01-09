@@ -141,14 +141,14 @@ Name:   alephium.hongchao.me
 Address: 34.147.83.244
 ```
 
-## Mining (Optional)
+#### Mining (Optional)
 
 Alephium stack comes with 2 miners: CPU miner and GPU miner (see [alephium-miner.yaml](kubernetes/alephium/alephium-miner.yaml)).
 
-### CPU mining
+##### CPU mining
 CPU miner works out of the box.
 
-### GPU mining
+##### GPU mining
 
 To do GPU ming on GKE, the terraform file already sets up a seperate GPU enabled nodepool. After the nodepool is created, Nvidia
 GPU device drivers need to be installed by deploying the following daemonset:
