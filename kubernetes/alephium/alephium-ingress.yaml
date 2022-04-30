@@ -1,10 +1,10 @@
-# This is for exposing the https://alephium.hongchao.me website.
+# This is for exposing the https://alephium.softfork.se website.
 # Requires [cert-manager](https://cert-manager.io/docs/) to be installed
 # in your k8s cluster
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: alephium-hongchao-me-ingress
+  name: alephium-softfork-se-ingress
   namespace: alephium
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - alephium.hongchao.me
-    secretName: alephium-hongchao-me-it-tls
+    - alephium.softfork.se
+    secretName: alephium-softfork-se-it-tls
   rules:
-  - host: alephium.hongchao.me
+  - host: alephium.softfork.se
     http:
       paths:
       - path: /docs

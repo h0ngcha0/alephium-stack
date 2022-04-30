@@ -4,10 +4,6 @@ Follow the [official installation instruction](https://cert-manager.io/docs/inst
 
 Specifically:
 ```
-kubectl create clusterrolebinding cluster-admin-binding \
-    --clusterrole=cluster-admin \
-    --user=$(gcloud config get-value core/account)
-
 $ helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \

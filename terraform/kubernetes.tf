@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "alephium-terraform-state"
+    bucket = "alephium-stack-terraform-state"
     prefix = "alephium"
   }
 }
@@ -110,7 +110,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
   }
 
   node_config {
-    preemptible  = true
+    preemptible  = false
     machine_type = var.kubernetes_node_pool_gpu_mining_machine_type
 
     metadata = {
@@ -118,7 +118,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
     }
 
     labels = {
-      preemptible-node = true
+      preemptible-node = false
     }
 
     disk_size_gb = 25

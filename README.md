@@ -7,9 +7,9 @@ Cloud Platform](https://cloud.google.com/) using [Kubernetes
 Engine](https://cloud.google.com/kubernetes-engine/). The following
 sites are setup and exposed using the code in this repository:
 
-- [Alephium Explorer](https://alephium.hongchao.me/#/blocks) (`https://alephium.hongchao.me`)
-- [Alephium Overview - Grafana](https://grafana.hongchao.me/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s) (`https://grafana.hongchao.me`)
-- [Alephium API Documentation](https://alephium.hongchao.me/docs) (`https://alephium.hongchao.me/docs`)
+- [Alephium Explorer](https://alephium.softfork.se/#/blocks) (`https://alephium.softfork.se`)
+- [Alephium Overview - Grafana](https://grafana.softfork.se/d/S3eJTo3Mk/alephium-overview?orgId=1&refresh=10s) (`https://grafana.softfork.se`)
+- [Alephium API Documentation](https://alephium.softfork.se/docs) (`https://alephium.softfork.se/docs`)
 - Alephium Full Node with the possibility to enable [CPU Miner](https://github.com/alephium/cpu-miner) and [GPU Miner](https://github.com/alephium/gpu-miner)
 
 [Terraform](terraform) files are GCP specific. [Kubernetes YAML
@@ -78,17 +78,15 @@ First we need to install
 
 - [cert manager](https://cert-manager.io/docs/),  which automatically
   manages certificates using letsencrypt. Follow the official [installation instruction](https://cert-manager.io/docs/installation/helm/)
+
+Specifically:
 ```
 ## Install cert-manager
-$ kubectl create clusterrolebinding cluster-admin-binding \
-    --clusterrole=cluster-admin \
-    --user=$(gcloud config get-value core/account)
-
 $ helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
-  --version v1.6.1 \
+  --version v1.8.0 \
   --set installCRDs=true
 
 $ kubectl apply -f cert-manager
@@ -98,20 +96,25 @@ $ kubectl apply -f cert-manager
   exposes Kubernetes services using Nginx as reverse proxy and load
   balancer. Follow the official [installation instruction](https://kubernetes.github.io/ingress-nginx/deploy/#gce-gke)
 
+Specifically:
 ```
-## Install ingress-nginx
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.2/deploy/static/provider/cloud/deploy.yaml
+## Create `cluster-admin` permissions on the cluster
+$ kubectl create clusterrolebinding cluster-admin-binding \
+    --clusterrole=cluster-admin \
+    --user=$(gcloud config get-value core/account)
 
+## Install ingress-nginx
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.0/deploy/static/provider/cloud/deploy.yaml
 ```
 
 After that, to expose the sites mentioned at the beginning of the
 README, run
 
 ```
-# exposes alephium.hongchao.me and alephium.hongchao.me/docs
+# exposes alephium.softfork.se and alephium.softfork.se/docs
 kubectl apply -f alephium/alephium-ingress.yaml
 
-# exposes grafana.hongchao.me
+# exposes grafana.softfork.se
 kubectl apply -f monitoring/grafana-ingress.yaml
 ```
 
@@ -129,15 +132,15 @@ ingress-nginx-controller   LoadBalancer   10.3.240.206   34.147.83.244   80:3261
 ```
 
 Here the external IP is `34.147.83.244`, which is the same as
-`alephium.hongchao.me` as shown below:
+`alephium.softfork.se` as shown below:
 
 ```
-➜ kubernetes git:(master) ✗ nslookup alephium.hongchao.me
+➜ kubernetes git:(master) ✗ nslookup alephium.softfork.se
 Server:         192.168.1.1
 Address:        192.168.1.1#53
 
 Non-authoritative answer:
-Name:   alephium.hongchao.me
+Name:   alephium.softfork.se
 Address: 34.147.83.244
 ```
 

@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: explorer-backend
-        image: alephium/explorer-backend:1.2.0
+        image: alephium/explorer-backend:1.6.2
         env:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
@@ -68,7 +68,7 @@ spec:
     spec:
       containers:
       - name: explorer-frontend
-        image: liuhongchao/explorer:latest
+        image: liuhongchao/explorer:f1345664c22d9b3af5d3740938392357aff14eeb
 ---
 apiVersion: v1
 kind: Service
