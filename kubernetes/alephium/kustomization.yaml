@@ -1,5 +1,6 @@
 namespace: alephium
 resources:
+  - storage-class.yaml
   - alephium-namespace.yaml
   - alephium-node.yaml
   - alephium-miner.yaml

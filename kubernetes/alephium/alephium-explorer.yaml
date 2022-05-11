@@ -112,7 +112,7 @@ spec:
             - name: POSTGRES_DB
               value: explorer
             - name: PGDATA
-              value: /data/pgdata2
+              value: /data/pgdata
       volumes:
         - name: explorer-postgres-data
           persistentVolumeClaim:
@@ -123,7 +123,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: alephium-explorer-postgres-pvc-claim
 spec:
-  storageClassName: standard
+  storageClassName: standard-retain
   accessModes:
     - ReadWriteOnce
   resources:

@@ -21,24 +21,29 @@ spec:
       name: alephium
     spec:
       containers:
+#      - command: ['sleep', 'infinity']
       - name: alephium
         env:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
         - name: ALEPHIUM_LOG_LEVEL
           value: INFO
-        image: alephium/alephium:latest
+        image: alephium/alephium:v1.3.2
         imagePullPolicy: Always
         ports:
           - containerPort: 12973
         volumeMounts:
-          - mountPath: "/alephium-home/"
+          - mountPath: "/alephium-home/.alephium"
             name: alephium-home
+            subPath: .alephium
           - mountPath: "/alephium-home/.alephium/user.conf"
             name: alephium-configs
             subPath: user.conf
           - mountPath: "/alephium-home/file-uploads"
             name: file-uploads
+            subPath: file-uploads
+      securityContext:
+        fsGroup: 65534  # user id of the `nobody` user
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
@@ -50,11 +55,19 @@ spec:
           emptyDir: {}
 ---
 apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+spec:
+  hard:
+    limits.ephemeral-storage: 1Gi
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: alephium-blockchain-pvc-claim
 spec:
-  storageClassName: standard
+  storageClassName: standard-retain
   accessModes:
     - ReadWriteOnce
   resources:

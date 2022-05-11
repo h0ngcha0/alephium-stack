@@ -63,7 +63,7 @@ resource "google_container_node_pool" "alephium_stack_nodes" {
   }
 
   node_config {
-    preemptible  = true
+    preemptible  = false
     machine_type = var.kubernetes_node_pool_primary_machine_type
 
     metadata = {
@@ -71,7 +71,7 @@ resource "google_container_node_pool" "alephium_stack_nodes" {
     }
 
     labels = {
-      preemptible-node = true
+      preemptible-node = false
     }
 
     disk_size_gb = 25
