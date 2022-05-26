@@ -13,7 +13,7 @@ spec:
     metadata:
       annotations:
         prometheus.io/path: /metrics
-        prometheus.io/port: "12973"
+        prometheus.io/port: "9090"
         prometheus.io/scheme: http
         prometheus.io/scrape: "true"
       labels:
@@ -104,6 +104,8 @@ spec:
           volumeMounts:
             - name: explorer-postgres-data
               mountPath: /data/
+            - name: dshm
+              mountPath: /dev/shm
           env:
             - name: POSTGRES_USER
               value: postgres
@@ -117,18 +119,22 @@ spec:
         - name: explorer-postgres-data
           persistentVolumeClaim:
             claimName: alephium-explorer-postgres-pvc-claim
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: alephium-explorer-postgres-pvc-claim
 spec:
-  storageClassName: standard-retain
+  storageClassName: balanced-retain
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 50Gi
 ---
 apiVersion: v1
 kind: Service

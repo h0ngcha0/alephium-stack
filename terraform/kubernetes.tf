@@ -59,7 +59,7 @@ resource "google_container_node_pool" "alephium_stack_nodes" {
 
   autoscaling {
     min_node_count = 1
-    max_node_count = 2
+    max_node_count = 1
   }
 
   node_config {
@@ -110,7 +110,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
   }
 
   node_config {
-    preemptible  = false
+    preemptible  = true
     machine_type = var.kubernetes_node_pool_gpu_mining_machine_type
 
     metadata = {
@@ -118,7 +118,7 @@ resource "google_container_node_pool" "alephium_stack_gpu_nodes" {
     }
 
     labels = {
-      preemptible-node = false
+      preemptible-node = true
     }
 
     disk_size_gb = 25

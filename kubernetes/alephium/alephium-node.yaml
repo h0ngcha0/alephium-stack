@@ -27,7 +27,7 @@ spec:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
         - name: ALEPHIUM_LOG_LEVEL
-          value: INFO
+          value: WARN
         image: alephium/alephium:v1.3.2
         imagePullPolicy: Always
         ports:
@@ -67,12 +67,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: alephium-blockchain-pvc-claim
 spec:
-  storageClassName: standard-retain
+  storageClassName: balanced-retain
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 30Gi
 ---
 apiVersion: v1
 kind: ConfigMap

@@ -26,7 +26,7 @@ variable "zone" {
 variable "kubernetes_node_pool_primary_machine_type" {
   type        = string
   description = "Machine type for Kubernetes primary node pool."
-  default     = "e2-standard-2"
+  default     = "e2-highmem-2"
 }
 
 variable "kubernetes_node_pool_gpu_mining_machine_type" {
