@@ -46,6 +46,48 @@ spec:
             name: explorer-backend
             port:
               number: 9090
+      - path: /infos/average-block-times
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /charts/hashrates
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/supply/total-alph
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/supply/circulating-alph
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/total-transactions
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/heights
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
       - path: /
         pathType: Prefix
         backend:
