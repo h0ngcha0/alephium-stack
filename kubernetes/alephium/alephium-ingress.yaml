@@ -25,6 +25,20 @@ spec:
             name: alephium
             port:
               number: 12973
+      - path: /full-node-docs
+        pathType: Prefix
+        backend:
+          service:
+            name: alephium
+            port:
+              number: 12973
+      - path: /explorer-backend-docs
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
       - path: /blocks
         pathType: Prefix
         backend:
