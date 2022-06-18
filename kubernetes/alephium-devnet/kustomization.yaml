@@ -1,8 +1,6 @@
-namespace: alephium
+namespace: alephium-devnet
 resources:
-  - storage-class.yaml
   - alephium-namespace.yaml
   - alephium-node.yaml
-  - alephium-miner.yaml
-  - alephium-explorer.yaml
+  - alephium-nft.yaml
   - alephium-ingress.yaml  ## Optional. Uncomment only if you wanna expose site. Consult README.md

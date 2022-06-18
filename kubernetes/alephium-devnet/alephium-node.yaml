@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alephium
+  name: alephium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alephium
+  template:
+    metadata:
+      # No prometheus scraping
+      # annotations:
+      #   prometheus.io/path: /metrics
+      #   prometheus.io/port: "12973"
+      #   prometheus.io/scheme: http
+      #   prometheus.io/scrape: "true"
+      labels:
+        app: alephium
+      name: alephium
+    spec:
+      containers:
+      - name: alephium
+        env:
+        - name: JAVA_OPTS
+          value: -Xms256m -Xmx3072m
+        - name: ALEPHIUM_LOG_LEVEL
+          value: WARN
+        image: liuhongchao/dev-alephium:1.4.0-rc3_2-196b0e6d-SNAPSHOT
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 12973
+        volumeMounts:
+          - mountPath: "/alephium-home/.alephium"
+            name: alephium-home
+            subPath: .alephium
+          - mountPath: "/alephium-home/.alephium/user.conf"
+            name: alephium-configs
+            subPath: user.conf
+          - mountPath: "/alephium-home/file-uploads"
+            name: file-uploads
+            subPath: file-uploads
+      securityContext:
+        fsGroup: 65534  # user id of the `nobody` user
+      volumes:
+        - name: alephium-home
+          persistentVolumeClaim:
+            claimName: alephium-blockchain-pvc-claim
+        - name: alephium-configs
+          configMap:
+            name: alephium-configs
+        - name: file-uploads  # required by http post
+          emptyDir: {}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+spec:
+  hard:
+    limits.ephemeral-storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alephium-blockchain-pvc-claim
+spec:
+  storageClassName: balanced-retain
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alephium-configs
+data:
+  user.conf: |
+    // in most cases, modify the following two lines
+    // 1 million token allocated for your address
+    alephium.genesis.allocations = [{address = "1DrDyTr9RpRsQnDnXo2YRiPzPW4ooHX5LLoqXrqfMrpQH", amount = 1000000000000000000000000, lock-duration = 0 seconds}]
+    alephium.consensus.num-zeros-at-least-in-hash = 0
+    alephium.consensus.uncle-dependency-gap-time = 0 seconds
+    
+    alephium.network.network-id = 4
+    alephium.discovery.bootstrap = []
+    alephium.wallet.locking-timeout = 99999 minutes
+    alephium.mempool.auto-mine-for-dev = true
+    alephium.node.event-log.enabled=true
+    
+    alephium.network.rest-port = 22973
+    alephium.network.ws-port = 21973
+    alephium.network.miner-api-port = 20973
+    alephium.api.network-interface = "0.0.0.0"
+    alephium.api.api-key-enabled = false
+    alephium.mining.api-interface = "0.0.0.0"
+    alephium.network.bind-address  = "0.0.0.0:19973"
+    alephium.network.internal-address  = "alephium:19973"
+    alephium.network.coordinator-address  = "alephium:19973"
+    
+    // arbitrary mining addresses
+    alephium.mining.miner-addresses = [
+      "1FsroWmeJPBhcPiUr37pWXdojRBe6jdey9uukEXk1TheA",
+      "1CQvSXsmM5BMFKguKDPpNUfw1idiut8UifLtT8748JdHc",
+      "193maApeJWrz9GFwWCfa982ccLARVE9Y1WgKSJaUs7UAx",
+      "16fZKYPCZJv2TP3FArA9FLUQceTS9U8xVnSjxFG9MBKyY"
+    ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alephium
+spec:
+  selector:
+    app: alephium
+  ports:
+    - name: http
+      protocol: TCP
+      port: 22973
+      targetPort: 22973
+    - name: ws
+      protocol: TCP
+      port: 21973
+      targetPort: 21973
+    - name: p2p
+      protocol: TCP
+      port: 19973
+      targetPort: 19973
+    - name: miner
+      protocol: TCP
+      port: 20973
+      targetPort: 20973
+  type: ClusterIP
