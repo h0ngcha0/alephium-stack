@@ -12,7 +12,7 @@ spec:
   tls:
   - hosts:
     - alephium-dev.softfork.se
-    secretName: alephium-dev-softfork-se-it-tls
+    secretName: alephium-dev-softfork-se-tls
   rules:
   - host: alephium-dev.softfork.se
     http:
@@ -24,6 +24,124 @@ spec:
             name: alephium
             port:
               number: 22973
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alephium-dev-explorer-api-softfork-se-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - alephium-dev-explorer-api.softfork.se
+    secretName: alephium-dev-explorer-api-softfork-se-tls
+  rules:
+  - host: alephium-dev-explorer-api.softfork.se
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alephium-dev-explorer-softfork-se-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - alephium-dev-explorer.softfork.se
+    secretName: alephium-dev-explorer-softfork-se-tls
+  rules:
+  - host: alephium-dev-explorer.softfork.se
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-frontend
+            port:
+              number: 3000
+      - path: /explorer-backend-docs
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /blocks
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /transactions
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /addresses
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/average-block-times
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /charts/hashrates
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/supply/total-alph
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/supply/circulating-alph
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/total-transactions
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
+      - path: /infos/heights
+        pathType: Prefix
+        backend:
+          service:
+            name: explorer-backend
+            port:
+              number: 9090
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
