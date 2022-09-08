@@ -5,3 +5,4 @@ resources:
   - alephium-explorer.yaml
   - alephium-nft.yaml
   - alephium-ingress.yaml  ## Optional. Uncomment only if you wanna expose site. Consult README.md
+  - wormhole

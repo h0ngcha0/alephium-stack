@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: auto-mine-devnet
+  name: auto-mine-devnet
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: auto-mine-devnet
+  template:
+    metadata:
+      labels:
+        app: auto-mine-devnet
+      name: auto-mine-devnet
+    spec:
+      containers:
+      - name: auto-mine-devnet
+        image: liuhongchao/automine:0.0.2
+        imagePullPolicy: Always

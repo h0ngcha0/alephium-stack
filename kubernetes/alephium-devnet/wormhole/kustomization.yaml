@@ -1,0 +1,7 @@
+namespace: alephium-devnet
+resources:
+  - eth-devnet.yaml
+  - guardian.yaml
+  - spy.yaml
+  - auto-mine-devnet.yaml
+  - bridge-ui.yaml

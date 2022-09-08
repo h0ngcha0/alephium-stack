@@ -1,0 +1,89 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eth-devnet
+  labels:
+    app: eth-devnet
+spec:
+  ports:
+    - port: 8545
+      name: rpc
+      protocol: TCP
+  clusterIP: None
+  selector:
+    app: eth-devnet
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eth-devnet
+spec:
+  selector:
+    matchLabels:
+      app: eth-devnet
+  serviceName: eth-devnet
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: eth-devnet
+    spec:
+      terminationGracePeriodSeconds: 1
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: eth-full-node
+          persistentVolumeClaim:
+            claimName: eth-full-node-pvc3
+      containers:
+        - name: ganache
+          image: liuhongchao/eth-node:0.0.1
+          volumeMounts:
+            - mountPath: /eth-full-node/
+              name: eth-full-node
+          command:
+            - npx
+            - ganache-cli
+            - -e 10000
+            - --deterministic
+            - --time="1970-01-01T00:00:00+00:00"
+            - --host=0.0.0.0
+            - --db=/eth-full-node/
+          ports:
+            - containerPort: 8545
+              name: rpc
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: rpc
+        - name: tests
+          image: liuhongchao/eth-node:0.0.1
+          stdin: true
+          command:
+            - /bin/sh
+            - -c
+            - "npm run migrate && npx truffle exec scripts/deploy_test_token.js && npx truffle exec scripts/register_solana_chain.js && npx truffle exec scripts/register_terra_chain.js && npx truffle exec scripts/register_bsc_chain.js && npx truffle exec scripts/register_algo_chain.js && npx truffle exec scripts/register_alph_chain.js && nc -lkp 2000 0.0.0.0"
+          readinessProbe:
+            periodSeconds: 1
+            failureThreshold: 300
+            tcpSocket:
+              port: 2000
+        - name: mine
+          image: liuhongchao/eth-node:0.0.1
+          command:
+            - /bin/sh
+            - -c
+            - "npx truffle exec mine.js"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eth-full-node-pvc3
+spec:
+  storageClassName: balanced-retain
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
