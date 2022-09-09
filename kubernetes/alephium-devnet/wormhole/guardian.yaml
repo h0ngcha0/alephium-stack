@@ -16,7 +16,7 @@ spec:
     - port: 7071
       name: public-rest
       protocol: TCP
-  clusterIP: None
+  type: ClusterIP
   selector:
     app: guardian
 ---

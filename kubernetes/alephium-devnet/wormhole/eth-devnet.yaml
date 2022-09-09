@@ -10,7 +10,7 @@ spec:
     - port: 8545
       name: rpc
       protocol: TCP
-  clusterIP: None
+  type: ClusterIP
   selector:
     app: eth-devnet
 ---
