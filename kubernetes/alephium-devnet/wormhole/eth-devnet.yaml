@@ -35,7 +35,7 @@ spec:
       volumes:
         - name: eth-full-node
           persistentVolumeClaim:
-            claimName: eth-full-node-pvc3
+            claimName: eth-full-node-pvc2
       containers:
         - name: ganache
           image: liuhongchao/eth-node:0.0.1
@@ -79,7 +79,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: eth-full-node-pvc3
+  name: eth-full-node-pvc2
 spec:
   storageClassName: balanced-retain
   accessModes:
