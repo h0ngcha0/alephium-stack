@@ -82,7 +82,18 @@ data:
   user.conf: |
     // in most cases, modify the following two lines
     // 1 million token allocated for your address
-    alephium.genesis.allocations = [{address = "1DrDyTr9RpRsQnDnXo2YRiPzPW4ooHX5LLoqXrqfMrpQH", amount = 1000000000000000000000000, lock-duration = 0 seconds}]
+    alephium.genesis.allocations = [
+      {
+        address = "1DrDyTr9RpRsQnDnXo2YRiPzPW4ooHX5LLoqXrqfMrpQH",
+        amount = 1000000000000000000000000,
+        lock-duration = 0 seconds
+      },
+      {
+        address = "16VPvbF1ShQsj8TappJWtoW6gRM1AEQXYqwo5rQ7BiAy3",
+        amount = 1000000000000000000000000,
+        lock-duration = 0 seconds
+      }
+    ]
     alephium.consensus.num-zeros-at-least-in-hash = 0
     alephium.consensus.uncle-dependency-gap-time = 0 seconds
     
