@@ -47,7 +47,7 @@ spec:
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
-            claimName: alephium-blockchain-pvc-claim-2
+            claimName: alephium-blockchain-pvc-claim
         - name: alephium-configs
           configMap:
             name: alephium-configs
@@ -65,7 +65,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: alephium-blockchain-pvc-claim-2
+  name: alephium-blockchain-pvc-claim
 spec:
   storageClassName: balanced-retain
   accessModes:

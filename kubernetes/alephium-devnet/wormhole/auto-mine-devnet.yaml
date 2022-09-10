@@ -5,7 +5,7 @@ metadata:
     app: auto-mine-devnet
   name: auto-mine-devnet
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: auto-mine-devnet
@@ -17,5 +17,5 @@ spec:
     spec:
       containers:
       - name: auto-mine-devnet
-        image: liuhongchao/automine:0.0.8
+        image: liuhongchao/automine:0.1.0
         imagePullPolicy: Always

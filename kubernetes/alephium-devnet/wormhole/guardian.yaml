@@ -29,7 +29,7 @@ spec:
     matchLabels:
       app: guardian
   serviceName: guardian
-  replicas: 5
+  replicas: 1
   updateStrategy:
     # The StatefulSet rolling update strategy is rather dumb, and updates one pod after another.
     # If we want blue-green deployments, we should use a Deployment instead.
@@ -54,7 +54,7 @@ spec:
                 path: bigtable-key.json
       containers:
         - name: guardiand
-          image: liuhongchao/guardiand:0.0.3
+          image: liuhongchao/guardiand:0.1.0
           volumeMounts:
             - mountPath: /run/node/
               name: node-data
@@ -119,8 +119,7 @@ spec:
             - --alphRPC
             - http://alephium:22973
             - --alphContractIds
-            - "yrTVU5AdNicgYyaSySn87Jxo1ZzfWtMuskwedApx9FNK,28kGa4TYzjAidkkyKmrX7vYR3p2TDNKYwXQDJazV26NwR"
-            # - "22L2GQATSNS2xG11QKcKXvwvcxDVsZn9DG1pkN3yeWCWE,24tTwfp8jFcj3ddW6keCLARwRxsdT2rRKggNPmioMA8NT"
+            - "23HPMahEAbQRqiA9jyoJKaU7gdZMtP9f2ggwPzekSidFk,22xBkre1qD43BGfqZtb86UbfksLNkCM36tsNofquragMm" # governance address, token bridge address
             - --alphGroupIndex
             - "0"
             - --alphMinConfirmations

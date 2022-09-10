@@ -35,10 +35,10 @@ spec:
       volumes:
         - name: eth-full-node
           persistentVolumeClaim:
-            claimName: eth-full-node-pvc2
+            claimName: eth-full-node-pvc
       containers:
         - name: ganache
-          image: liuhongchao/eth-node:0.0.1
+          image: liuhongchao/eth-node:0.1.0
           volumeMounts:
             - mountPath: /eth-full-node/
               name: eth-full-node
@@ -58,7 +58,7 @@ spec:
             tcpSocket:
               port: rpc
         - name: tests
-          image: liuhongchao/eth-node:0.0.1
+          image: liuhongchao/eth-node:0.1.0
           stdin: true
           command:
             - /bin/sh
@@ -70,7 +70,7 @@ spec:
             tcpSocket:
               port: 2000
         - name: mine
-          image: liuhongchao/eth-node:0.0.1
+          image: liuhongchao/eth-node:0.1.0
           command:
             - /bin/sh
             - -c
@@ -79,7 +79,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: eth-full-node-pvc2
+  name: eth-full-node-pvc
 spec:
   storageClassName: balanced-retain
   accessModes:

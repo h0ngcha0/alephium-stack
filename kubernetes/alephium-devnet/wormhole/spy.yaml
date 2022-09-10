@@ -35,7 +35,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: spy
-          image: liuhongchao/guardiand:0.0.3
+          image: liuhongchao/guardiand:0.1.0
           command:
             - /guardiand
             - spy

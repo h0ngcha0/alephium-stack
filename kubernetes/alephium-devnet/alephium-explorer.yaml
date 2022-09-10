@@ -127,7 +127,7 @@ spec:
       volumes:
         - name: explorer-postgres-data
           persistentVolumeClaim:
-            claimName: alephium-explorer-postgres-pvc-claim-2
+            claimName: alephium-explorer-postgres-pvc-claim
         - name: dshm
           emptyDir:
             medium: Memory
@@ -136,7 +136,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: alephium-explorer-postgres-pvc-claim-2
+  name: alephium-explorer-postgres-pvc-claim
 spec:
   storageClassName: balanced-retain
   accessModes:
