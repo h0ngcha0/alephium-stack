@@ -5,7 +5,7 @@ metadata:
     app: auto-mine-devnet
   name: auto-mine-devnet
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: auto-mine-devnet

@@ -13,7 +13,7 @@ spec:
     - port: 6060
       name: status
       protocol: TCP
-  clusterIP: None
+  type: ClusterIP
   selector:
     app: spy
 ---
@@ -40,7 +40,7 @@ spec:
             - /guardiand
             - spy
             - --nodeKey
-            - /tmp/node.key
+            - /tmp/node.key  # is this correct?
             - --spyRPC
             - "[::]:7072"
             # Hardcoded devnet bootstrap (generated from deterministic key in guardiand)
