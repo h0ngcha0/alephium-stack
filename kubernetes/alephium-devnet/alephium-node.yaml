@@ -28,7 +28,7 @@ spec:
           value: -Xms256m -Xmx3072m
         - name: ALEPHIUM_LOG_LEVEL
           value: WARN
-        image: liuhongchao/dev-alephium:1.5.0-rc4_6-819d0dcf-SNAPSHOT-jdk17
+        image: liuhongchao/dev-alephium:1.5.0-rc7_9-efdff693-SNAPSHOT-jdk17
         imagePullPolicy: Always
         ports:
           - containerPort: 12973
@@ -47,7 +47,7 @@ spec:
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
-            claimName: alephium-blockchain-pvc-claim2
+            claimName: alephium-blockchain-pvc-claim
         - name: alephium-configs
           configMap:
             name: alephium-configs
@@ -65,7 +65,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: alephium-blockchain-pvc-claim2
+  name: alephium-blockchain-pvc-claim
 spec:
   storageClassName: balanced-retain
   accessModes:

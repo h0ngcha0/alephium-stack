@@ -60,7 +60,7 @@ metadata:
     app: explorer-frontend
   name: explorer-frontend
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: explorer-frontend
@@ -127,7 +127,7 @@ spec:
       volumes:
         - name: explorer-postgres-data
           persistentVolumeClaim:
-            claimName: alephium-explorer-postgres-pvc-claim2
+            claimName: alephium-explorer-postgres-pvc-claim
         - name: dshm
           emptyDir:
             medium: Memory
@@ -136,7 +136,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: alephium-explorer-postgres-pvc-claim2
+  name: alephium-explorer-postgres-pvc-claim
 spec:
   storageClassName: balanced-retain
   accessModes:

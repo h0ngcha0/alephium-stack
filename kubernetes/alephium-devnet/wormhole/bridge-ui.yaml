@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: bridge-ui
-          image: liuhongchao/bridge-ui:0.1.0
+          image: liuhongchao/bridge-ui:0.1.1
           imagePullPolicy: Always
 ---
 apiVersion: v1
