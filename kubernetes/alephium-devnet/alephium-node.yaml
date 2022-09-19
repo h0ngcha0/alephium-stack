@@ -26,8 +26,10 @@ spec:
         env:
         - name: JAVA_OPTS
           value: -Xms256m -Xmx3072m
+        - name: ALEPHIUM_ENABLE_DEBUG_LOGGING
+          value: "true"
         - name: ALEPHIUM_LOG_LEVEL
-          value: WARN
+          value: INFO
         image: liuhongchao/dev-alephium:1.5.0-rc7_9-efdff693-SNAPSHOT-jdk17
         imagePullPolicy: Always
         ports:
@@ -47,7 +49,7 @@ spec:
       volumes:
         - name: alephium-home
           persistentVolumeClaim:
-            claimName: alephium-blockchain-pvc-claim
+            claimName: alephium-blockchain-pvc-claim2
         - name: alephium-configs
           configMap:
             name: alephium-configs
@@ -65,14 +67,14 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: alephium-blockchain-pvc-claim
+  name: alephium-blockchain-pvc-claim2
 spec:
   storageClassName: balanced-retain
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: ConfigMap

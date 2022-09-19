@@ -47,7 +47,7 @@ spec:
         # mount shared between containers for runtime state
         - name: node-data
           persistentVolumeClaim:
-            claimName: guardian-node-pvc2
+            claimName: guardian-node-pvc
         - name: node-keysdir
           secret:
             secretName: node-bigtable-key
@@ -57,20 +57,26 @@ spec:
                 path: bigtable-key.json
       containers:
         - name: guardiand
-          image: liuhongchao/guardiand:0.1.3
+          image: liuhongchao/guardiand:0.2.1
           volumeMounts:
             - mountPath: /run/node/
               name: node-data
             - mountPath: /tmp/mounted-keys
               name: node-keysdir
-          env:
-            - name: BIGTABLE_EMULATOR_HOST
-              value: bigtable-emulator:8086
-            - name: PUBSUB_EMULATOR_HOST
-              value: pubsub-emulator:8085
           command:
             - /guardiand
             - node
+            - --bigTablePersistenceEnabled
+            - --bigTableInstanceName
+            - wormhole-dev
+            - --bigTableTableName
+            - v2Events
+            - --bigTableTopicName
+            - wormhole-guardian-dev
+            - --bigTableKeyPath
+            - /tmp/mounted-keys/bigtable-key.json
+            - --bigTableGCPProject
+            - softfork-production
             - --ethRPC
             - ws://eth-devnet:8545
             - --bscRPC
@@ -122,7 +128,7 @@ spec:
             - --alphRPC
             - http://alephium:22973
             - --alphContractIds
-            - "2662Guh8z8MfoPV4Kj12GSRQvqBJdq7U2E9S45f5APsaR,yvN1jsXgVbS11qz26zKeGNcmakcNsg1GPBULP2BKpgrs" # governance address, token bridge address
+            - "ujKtE1eXzYqppji5wTAwGnok61chmWGvA8pmTXzQ7LFa,29GBV4QkN2acJiRdKvmGFVMvGJpXgZnt16eYqqxVg49as" # governance address, token bridge address
             - --alphGroupIndex
             - "0"
             - --alphMinConfirmations
@@ -176,7 +182,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: guardian-node-pvc2
+  name: guardian-node-pvc
 spec:
   storageClassName: balanced-retain
   accessModes:

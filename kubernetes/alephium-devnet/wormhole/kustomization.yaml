@@ -2,6 +2,8 @@ namespace: alephium-devnet
 resources:
   - eth-devnet.yaml
   - guardian.yaml
+  - node-bigtable-key.yaml
   - spy.yaml
   - auto-mine-devnet.yaml
   - bridge-ui.yaml
+  - explorer.yaml
